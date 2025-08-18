@@ -13,6 +13,6 @@ public class CategoryController {
 
 	@GetMapping("/findById")
 	public ResponseEntity<String> findById() {
-		return ResponseEntity.ok("Es una prueba");
+		return ResponseEntity.ok("Es una prueba para validar husky");
 	}
 }
