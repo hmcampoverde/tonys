@@ -55,7 +55,7 @@ public class CustomExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
 			Message.builder()
 				.severity("error")
-				.summary("title.fatal")
+				.summary(messageHandler.getDetail("title.fatal"))
 				.detail(messageHandler.getDetail("user.username.invalid"))
 				.build()
 		);

@@ -25,7 +25,7 @@ public class Role extends EntityBase {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@Column(name = "role_code", unique = true, nullable = false, length = 3)
+	@Column(name = "role_code", unique = true, nullable = false, length = 10)
 	private String code;
 
 	@Column(name = "role_name", unique = true, nullable = false, length = 75)
