@@ -22,7 +22,7 @@ public class BeanConfiguration {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://192.168.1.11:4200"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
 		configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
 		configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -30,6 +30,7 @@ public class BeanConfiguration {
 		configuration.setExposedHeaders(Arrays.asList("*"));
 		configuration.setExposedHeaders(List.of("x-auth-token"));
 		configuration.setMaxAge(3600L);
+
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 

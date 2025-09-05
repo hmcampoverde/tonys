@@ -15,5 +15,5 @@ public class MenuDto {
 	private String name;
 	private String url;
 	private String icon;
-	private MenuDto parent;
+	private Long idParent;
 }

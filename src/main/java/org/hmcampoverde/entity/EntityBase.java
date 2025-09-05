@@ -16,6 +16,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class EntityBase implements Serializable {
 
+	@Column(name = "actived", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'TRUE'")
+	private boolean actived;
+
 	@Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'FALSE'")
 	private boolean deleted;
 

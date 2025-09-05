@@ -30,7 +30,4 @@ public class Role extends EntityBase {
 
 	@Column(name = "role_name", unique = true, nullable = false, length = 75)
 	private String name;
-
-	@Column(name = "role_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'TRUE'")
-	private boolean active;
 }

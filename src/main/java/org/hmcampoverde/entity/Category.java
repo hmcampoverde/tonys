@@ -17,26 +17,28 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "tbl_user")
+@Table(name = "tbl_category")
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class User extends EntityBase {
+public class Category extends EntityBase {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id", nullable = false, length = 4)
-	@EqualsAndHashCode.Include
+	@Column(name = "category_id", nullable = false, length = 2)
 	private Long id;
 
-	@Column(name = "user_username", unique = true, nullable = false, length = 50)
-	private String username;
+	@Column(name = "category_name", unique = true, nullable = false, length = 75)
+	private String name;
 
-	@Column(name = "user_password", nullable = false, columnDefinition = "TEXT")
-	private String password;
+	@Column(name = "category_visible", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'TRUE'")
+	private boolean visible;
+
+	@Column(name = "category_icon", nullable = false, length = 75)
+	private String icon;
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-	@JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_USER_ROL"))
-	private Role role;
+	@JoinColumn(name = "parent_id", nullable = true, foreignKey = @ForeignKey(name = "FK_CATEGORY_PARENT"))
+	private Category parent;
 }

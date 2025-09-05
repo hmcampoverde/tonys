@@ -11,10 +11,6 @@ public class MessageHandler {
 
 	private final MessageSource messageSource;
 
-	public String getDetail(String key) {
-		return getDetail(key, new Object[] {});
-	}
-
 	public String getDetail(String key, Object... arguments) {
 		return messageSource.getMessage(key, arguments, "key does not exist: ".concat(key), Locale.of("es"));
 	}

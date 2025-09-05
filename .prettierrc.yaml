@@ -9,3 +9,4 @@ overrides:
       tabWidth: 2
       useTabs: true
       trailingComma: "none"
+      objectWrap: "preserve"
