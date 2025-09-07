@@ -2,7 +2,7 @@ package org.hmcampoverde.mapper;
 
 import lombok.AllArgsConstructor;
 import org.hmcampoverde.dto.MenuDto;
-import org.hmcampoverde.entity.Menu;
+import org.hmcampoverde.model.Menu;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

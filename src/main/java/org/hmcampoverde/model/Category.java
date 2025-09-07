@@ -1,4 +1,4 @@
-package org.hmcampoverde.entity;
+package org.hmcampoverde.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,7 +29,7 @@ public class Category extends EntityBase {
 	@Column(name = "category_id", nullable = false, length = 2)
 	private Long id;
 
-	@Column(name = "category_name", unique = true, nullable = false, length = 75)
+	@Column(name = "category_name", nullable = false, length = 75)
 	private String name;
 
 	@Column(name = "category_visible", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'TRUE'")

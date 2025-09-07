@@ -5,7 +5,8 @@ import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hmcampoverde.dto.CategoryDto;
-import org.hmcampoverde.message.Message;
+import org.hmcampoverde.response.MessageHandler;
+import org.hmcampoverde.response.MessageResponse;
 import org.hmcampoverde.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,8 @@ public class CategoryController {
 
 	private final CategoryService categoryService;
 
+	private final MessageHandler messageHandler;
+
 	@GetMapping("/findAll")
 	public ResponseEntity<List<CategoryDto>> findAll() {
 		return ResponseEntity.ok(categoryService.findAll());
@@ -37,20 +40,23 @@ public class CategoryController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<Message> create(@Valid @RequestBody CategoryDto categoryDto) {
-		return ResponseEntity.ok(categoryService.create(categoryDto));
+	public ResponseEntity<MessageResponse<CategoryDto>> create(@Valid @RequestBody CategoryDto categoryDto) {
+		categoryDto = categoryService.create(categoryDto);
+		return ResponseEntity.ok(messageHandler.buildCreationMessage("category.create", categoryDto));
 	}
 
 	@PutMapping("/update/{id}")
-	public ResponseEntity<Message> update(
-		@PathVariable("id") @Min(1) Long id,
+	public ResponseEntity<MessageResponse<?>> update(
+		@PathVariable @Min(1) Long id,
 		@Valid @RequestBody CategoryDto categoryDto
 	) {
-		return ResponseEntity.ok(this.categoryService.update(id, categoryDto));
+		categoryDto = categoryService.update(id, categoryDto);
+		return ResponseEntity.ok(messageHandler.buildUpdateMessage("category.update", categoryDto));
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<Message> delete(@PathVariable("id") Long id) {
-		return ResponseEntity.ok().body(this.categoryService.delete(id));
+	public ResponseEntity<MessageResponse<Void>> delete(@PathVariable("id") Long id) {
+		categoryService.delete(id);
+		return ResponseEntity.ok().body(messageHandler.buildDeleteMessage("category.deleted", null));
 	}
 }

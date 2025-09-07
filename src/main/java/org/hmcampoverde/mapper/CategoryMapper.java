@@ -2,7 +2,7 @@ package org.hmcampoverde.mapper;
 
 import lombok.AllArgsConstructor;
 import org.hmcampoverde.dto.CategoryDto;
-import org.hmcampoverde.entity.Category;
+import org.hmcampoverde.model.Category;
 import org.hmcampoverde.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

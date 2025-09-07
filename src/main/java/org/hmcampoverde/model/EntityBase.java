@@ -1,4 +1,4 @@
-package org.hmcampoverde.entity;
+package org.hmcampoverde.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

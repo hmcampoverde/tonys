@@ -1,4 +1,4 @@
-package org.hmcampoverde.entity;
+package org.hmcampoverde.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,22 +12,18 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "tbl_role")
+@Table(name = "tbl_department")
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class Role extends EntityBase {
+public class Department extends EntityBase {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "role_id", unique = true, nullable = false, length = 2)
-	@EqualsAndHashCode.Include
+	@Column(name = "department_id", nullable = false, length = 2)
 	private Long id;
 
-	@Column(name = "role_code", unique = true, nullable = false, length = 10)
-	private String code;
-
-	@Column(name = "role_name", unique = true, nullable = false, length = 75)
+	@Column(name = "category_name", unique = true, nullable = false, length = 75)
 	private String name;
 }
