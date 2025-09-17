@@ -20,7 +20,7 @@ public class CategoryDto {
 	@NotBlank(message = "{category.name.required}")
 	private String name;
 
-	@Size(min = 3, max = 75, message = "{category.icon.size}")
+	@Size(min = 2, max = 75, message = "{category.icon.size}")
 	@NotBlank(message = "{category.icon.required}")
 	private String icon;
 

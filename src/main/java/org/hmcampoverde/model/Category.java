@@ -32,11 +32,11 @@ public class Category extends EntityBase {
 	@Column(name = "category_name", nullable = false, length = 75)
 	private String name;
 
-	@Column(name = "category_visible", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'TRUE'")
-	private boolean visible;
-
 	@Column(name = "category_icon", nullable = false, length = 75)
 	private String icon;
+
+	@Column(name = "category_visible", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'TRUE'")
+	private boolean visible;
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id", nullable = true, foreignKey = @ForeignKey(name = "FK_CATEGORY_PARENT"))
