@@ -37,6 +37,22 @@ public class InstitutionServiceImpl implements InstitutionService {
 	}
 
 	@Override
+	public Page<InstitutionDto> findAllWithFilter(PaginatedRequest request) {
+		Sort sort = Sort.by("amie").ascending();
+
+		if (request.getSort().getField() != null) {
+			sort = request.getSort().getDirection().equalsIgnoreCase("desc")
+				? Sort.by(request.getSort().getField()).descending()
+				: Sort.by(request.getSort().getField()).ascending();
+		}
+
+		Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
+		CustomSpecification<Institution> spec = new CustomSpecification<Institution>(request.getFilters(), List.of());
+
+		return repository.findAll(spec, pageable).map(mapper::map);
+	}
+
+	@Override
 	public InstitutionDto findById(Long id) {
 		return repository
 			.findById(id)
@@ -75,26 +91,10 @@ public class InstitutionServiceImpl implements InstitutionService {
 		repository
 			.findById(id)
 			.ifPresentOrElse(
-				category -> category.setDeleted(Boolean.TRUE),
+				institution -> institution.setDeleted(Boolean.TRUE),
 				() -> {
 					throw new CustomException("", HttpStatus.BAD_REQUEST);
 				}
 			);
-	}
-
-	@Override
-	public Page<InstitutionDto> findAllWithFilter(PaginatedRequest request) {
-		Sort sort = Sort.by("amie").ascending();
-
-		if (request.getSort().getField() != null) {
-			sort = request.getSort().getDirection().equalsIgnoreCase("desc")
-				? Sort.by(request.getSort().getField()).descending()
-				: Sort.by(request.getSort().getField()).ascending();
-		}
-
-		Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
-		CustomSpecification<Institution> spec = new CustomSpecification<Institution>(request.getFilters());
-
-		return repository.findAll(spec, pageable).map(mapper::map);
 	}
 }

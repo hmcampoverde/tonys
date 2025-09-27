@@ -5,7 +5,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hmcampoverde.response.ErrorReponse;
+import org.hmcampoverde.response.ErrorResponse;
 import org.hmcampoverde.response.MessageHandler;
 import org.hmcampoverde.response.Severity;
 import org.springframework.http.HttpStatus;
@@ -25,23 +25,23 @@ public class CustomExceptionHandler {
 	private final MessageHandler messageHandler;
 
 	@ExceptionHandler(value = { Exception.class })
-	public ResponseEntity<ErrorReponse> handleException(Exception exception) {
+	public ResponseEntity<ErrorResponse> handleException(Exception exception) {
 		return ResponseEntity.badRequest().body(
-			new ErrorReponse(Severity.error, messageHandler.getDetail("summary.error"), exception.getMessage())
+			new ErrorResponse(Severity.error, messageHandler.getDetail("summary.error"), exception.getMessage())
 		);
 	}
 
 	@ExceptionHandler(CustomException.class)
-	public ResponseEntity<ErrorReponse> handleCustomException(CustomException exception) {
+	public ResponseEntity<ErrorResponse> handleCustomException(CustomException exception) {
 		return ResponseEntity.status(exception.getStatus()).body(
-			new ErrorReponse(Severity.error, messageHandler.getDetail("summary.error"), exception.getMessage())
+			new ErrorResponse(Severity.error, messageHandler.getDetail("summary.error"), exception.getMessage())
 		);
 	}
 
 	@ExceptionHandler(value = { NoResourceFoundException.class })
-	public ResponseEntity<ErrorReponse> handleNoResourceFoundException(NoResourceFoundException exception) {
+	public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException exception) {
 		return ResponseEntity.badRequest().body(
-			new ErrorReponse(
+			new ErrorResponse(
 				Severity.error,
 				messageHandler.getDetail("summary.error"),
 				messageHandler.getDetail("validation.notFound", exception.getResourcePath())
@@ -50,11 +50,11 @@ public class CustomExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	public ResponseEntity<ErrorReponse> handleMethodArgumentTypeMismatchException(
+	public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
 		MethodArgumentTypeMismatchException exception
 	) {
 		return ResponseEntity.badRequest().body(
-			new ErrorReponse(
+			new ErrorResponse(
 				Severity.error,
 				messageHandler.getDetail("summary.error"),
 				messageHandler.getDetail("validation.invalidParameter", exception.getName())
@@ -63,15 +63,17 @@ public class CustomExceptionHandler {
 	}
 
 	@ExceptionHandler(value = { ConstraintViolationException.class })
-	public ResponseEntity<List<ErrorReponse>> handleConstraintViolationException(ConstraintViolationException exception) {
-		List<ErrorReponse> errors = new ArrayList<>();
+	public ResponseEntity<List<ErrorResponse>> handleConstraintViolationException(
+		ConstraintViolationException exception
+	) {
+		List<ErrorResponse> errors = new ArrayList<>();
 
 		exception
 			.getConstraintViolations()
 			.stream()
 			.forEach(violation -> {
 				errors.add(
-					new ErrorReponse(
+					new ErrorResponse(
 						Severity.error,
 						messageHandler.getDetail("summary.error"),
 						messageHandler.getDetail(
@@ -89,17 +91,17 @@ public class CustomExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<List<ErrorReponse>> handleMethodArgumentNotValidException(
+	public ResponseEntity<List<ErrorResponse>> handleMethodArgumentNotValidException(
 		MethodArgumentNotValidException exception
 	) {
-		List<ErrorReponse> errors = new ArrayList<>();
+		List<ErrorResponse> errors = new ArrayList<>();
 
 		exception
 			.getBindingResult()
 			.getAllErrors()
 			.forEach(violation ->
 				errors.add(
-					new ErrorReponse(Severity.error, messageHandler.getDetail("summary.error"), violation.getDefaultMessage())
+					new ErrorResponse(Severity.error, messageHandler.getDetail("summary.error"), violation.getDefaultMessage())
 				)
 			);
 
@@ -107,9 +109,9 @@ public class CustomExceptionHandler {
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<ErrorReponse> handleBadCredentialsException(BadCredentialsException exception) {
+	public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exception) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-			new ErrorReponse(
+			new ErrorResponse(
 				Severity.error,
 				messageHandler.getDetail("summary.error"),
 				messageHandler.getDetail("user.username.invalid")
@@ -118,9 +120,9 @@ public class CustomExceptionHandler {
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<ErrorReponse> handleAccessDeniedException(AccessDeniedException exception) {
+	public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException exception) {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-			new ErrorReponse(
+			new ErrorResponse(
 				Severity.error,
 				messageHandler.getDetail("summary.error"),
 				messageHandler.getDetail("user.username.unauthorized")
@@ -129,9 +131,9 @@ public class CustomExceptionHandler {
 	}
 
 	@ExceptionHandler(DisabledException.class)
-	public ResponseEntity<ErrorReponse> handleDisabledException(DisabledException exception) {
+	public ResponseEntity<ErrorResponse> handleDisabledException(DisabledException exception) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-			new ErrorReponse(
+			new ErrorResponse(
 				Severity.error,
 				messageHandler.getDetail("summary.error"),
 				messageHandler.getDetail("user.username.disabled")

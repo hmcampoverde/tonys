@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ErrorReponse {
+public class ErrorResponse {
 
 	private Severity severity;
 	private String summary;

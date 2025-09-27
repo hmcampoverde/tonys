@@ -35,7 +35,7 @@ public class CategoryMapper {
 			.addMappings(mapper -> mapper.skip(Category::setId))
 			.map(categoryDto, category);
 
-		if (categoryDto.getIdParent() != null) {
+		if (categoryDto.getIdParent() != null && categoryDto.getIdParent() != 0) {
 			category.setParent(categoryRepository.getReferenceById(categoryDto.getIdParent()));
 		} else {
 			category.setParent(null);

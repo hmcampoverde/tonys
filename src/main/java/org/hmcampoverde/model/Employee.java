@@ -40,7 +40,7 @@ public class Employee extends EntityBase {
 	@Column(name = "employee_identification", unique = true, nullable = false, length = 10)
 	private String identification;
 
-	@Column(name = "employee_email_employeeal", nullable = false, length = 75)
+	@Column(name = "employee_email_personal", nullable = false, length = 75)
 	private String emailPersonal;
 
 	@Column(name = "employee_email_institutional", nullable = false, length = 75)
@@ -52,7 +52,7 @@ public class Employee extends EntityBase {
 	@Column(name = "employee_mobile", nullable = false, length = 18)
 	private String mobile;
 
-	@Column(name = "employee_addres", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "employee_address", nullable = false, columnDefinition = "TEXT")
 	private String address;
 
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)

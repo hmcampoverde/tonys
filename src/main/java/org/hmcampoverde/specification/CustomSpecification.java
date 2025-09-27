@@ -2,6 +2,8 @@ package org.hmcampoverde.specification;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -18,6 +20,8 @@ import org.springframework.lang.Nullable;
 public class CustomSpecification<T> implements Specification<T> {
 
 	private final List<FilterCriteria> filters;
+
+	private final List<String> fetchs;
 
 	@Override
 	@Nullable
@@ -39,7 +43,7 @@ public class CustomSpecification<T> implements Specification<T> {
 		for (FilterCriteria criteria : criterias) {
 			String field = criteria.getField();
 			String operator = criteria.getOperator();
-			Path<?> path = root.get(field);
+			Path<?> path = getPath(root, field);
 
 			List<FilterCriteria> group = filters
 				.stream()
@@ -48,15 +52,15 @@ public class CustomSpecification<T> implements Specification<T> {
 
 			if (group.size() > 1) {
 				if (operator.equals("or")) {
-					predicate = builder.and(predicate, builder.or(predicate(path, builder, group)));
+					predicate = builder.and(predicate, builder.or(buildPredicates(path, builder, group)));
 				} else {
-					predicate = builder.and(predicate, builder.and(predicate(path, builder, group)));
+					predicate = builder.and(predicate, builder.and(buildPredicates(path, builder, group)));
 				}
 			} else {
 				if (criteria.isGlobal()) {
-					predicatesGlobal.add(predicate(path, builder, criteria));
+					predicatesGlobal.add(buildPredicate(path, builder, criteria));
 				} else {
-					predicate = builder.and(predicate, predicate(path, builder, criteria));
+					predicate = builder.and(predicate, buildPredicate(path, builder, criteria));
 				}
 			}
 		}
@@ -65,21 +69,23 @@ public class CustomSpecification<T> implements Specification<T> {
 			predicate = builder.and(predicate, builder.or(predicatesGlobal.toArray(new Predicate[0])));
 		}
 
-		return predicate;
+		fetchs.forEach(fetch -> root.fetch(fetch, JoinType.INNER));
+
+		return predicate = builder.and(predicate, builder.equal(root.get("deleted"), Boolean.FALSE));
 	}
 
-	private Predicate[] predicate(Path<?> path, CriteriaBuilder builder, List<FilterCriteria> criterias) {
+	private Predicate[] buildPredicates(Path<?> path, CriteriaBuilder builder, List<FilterCriteria> criterias) {
 		Predicate[] predicates = new Predicate[criterias.size()];
 		int index = 0;
 		for (FilterCriteria criteria : criterias) {
-			predicates[index] = predicate(path, builder, criteria);
+			predicates[index] = buildPredicate(path, builder, criteria);
 			index++;
 		}
 
 		return predicates;
 	}
 
-	private Predicate predicate(Path<?> path, CriteriaBuilder builder, FilterCriteria criteria) {
+	private Predicate buildPredicate(Path<?> path, CriteriaBuilder builder, FilterCriteria criteria) {
 		Predicate predicate = null;
 		String matchMode = criteria.getMatchMode();
 		Object value = criteria.getValue();
@@ -121,5 +127,26 @@ public class CustomSpecification<T> implements Specification<T> {
 		}
 
 		return predicate;
+	}
+
+	public Path<?> getPath(Root<T> root, String properties) {
+		if (properties == null || properties.isEmpty()) {
+			throw new IllegalArgumentException("La expresión del path no puede ser nula o vacía");
+		}
+
+		String[] parts = properties.split("\\.");
+		Path<?> path = root;
+
+		for (int i = 0; i < parts.length; i++) {
+			if (path instanceof Root<?>) {
+				path = root.get(parts[i]);
+			} else if (path instanceof Join<?, ?>) {
+				path = ((Join<?, ?>) path).join(parts[i], JoinType.INNER);
+			} else {
+				path = path.get(parts[i]);
+			}
+		}
+
+		return path;
 	}
 }

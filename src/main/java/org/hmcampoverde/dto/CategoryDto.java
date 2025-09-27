@@ -16,11 +16,11 @@ public class CategoryDto {
 
 	private Long id;
 
-	@Size(min = 5, max = 75, message = "{category.name.size}")
+	@Size(max = 75, message = "{category.name.size}")
 	@NotBlank(message = "{category.name.required}")
 	private String name;
 
-	@Size(min = 2, max = 75, message = "{category.icon.size}")
+	@Size(max = 75, message = "{category.icon.size}")
 	@NotBlank(message = "{category.icon.required}")
 	private String icon;
 
