@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class SecurityProvider {
+public class SecurityProviderTokenImpl implements SecurityProviderToken {
 
 	@Value("${application.security.jwt.secret-key}")
 	private String secretKey;
@@ -29,7 +29,7 @@ public class SecurityProvider {
 	@Value("${application.security.jwt.time.expiration}")
 	private int expirationTime;
 
-	public String buildToken(Authentication authentication) {
+	public String generate(Authentication authentication) {
 		UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
 		String role = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElse("");
@@ -45,7 +45,7 @@ public class SecurityProvider {
 			.compact();
 	}
 
-	public String refreshToken(String token) throws ParseException {
+	public String refresh(String token) throws ParseException {
 		try {
 			Jwts.parser().verifyWith(getSecretKey(secretKey)).build().parseSignedClaims(token);
 		} catch (ExpiredJwtException e) {
@@ -65,7 +65,7 @@ public class SecurityProvider {
 		return null;
 	}
 
-	public boolean validateToken(String token) {
+	public boolean validate(String token) {
 		try {
 			Jwts.parser().verifyWith(getSecretKey(secretKey)).build().parseSignedClaims(token);
 			return true;
@@ -87,7 +87,7 @@ public class SecurityProvider {
 		return Jwts.parser().verifyWith(getSecretKey(secretKey)).build().parseSignedClaims(token).getPayload().getSubject();
 	}
 
-	private SecretKey getSecretKey(String secretKey) {
+	public SecretKey getSecretKey(String secretKey) {
 		byte[] bytes = Decoders.BASE64URL.decode(secretKey);
 		return Keys.hmacShaKeyFor(bytes);
 	}

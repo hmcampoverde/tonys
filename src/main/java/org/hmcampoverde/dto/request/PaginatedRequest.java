@@ -1,4 +1,4 @@
-package org.hmcampoverde.response;
+package org.hmcampoverde.dto.request;
 
 import java.io.Serializable;
 import java.util.List;

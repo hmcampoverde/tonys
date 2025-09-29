@@ -1,9 +1,6 @@
 package org.hmcampoverde.service;
 
 import org.hmcampoverde.dto.InstitutionDto;
-import org.hmcampoverde.response.PaginatedRequest;
-import org.springframework.data.domain.Page;
+import org.hmcampoverde.entity.Institution;
 
-public interface InstitutionService extends Service<InstitutionDto> {
-	public Page<InstitutionDto> findAllWithFilter(PaginatedRequest request);
-}
+public interface InstitutionService extends Service<Institution, InstitutionDto> {}

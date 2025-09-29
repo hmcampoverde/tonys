@@ -2,17 +2,20 @@ package org.hmcampoverde.mapper;
 
 import lombok.AllArgsConstructor;
 import org.hmcampoverde.dto.MenuDto;
-import org.hmcampoverde.model.Menu;
-import org.modelmapper.ModelMapper;
+import org.hmcampoverde.entity.Menu;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
 public class MenuMapper {
 
-	private final ModelMapper modelMapper;
-
 	public MenuDto map(Menu menu) {
-		return modelMapper.map(menu, MenuDto.class);
+		return MenuDto.builder()
+			.id(menu.getId())
+			.name(menu.getName())
+			.url(menu.getUrl())
+			.icon(menu.getIcon())
+			.idParent(menu.getParent() != null ? menu.getParent().getId() : null)
+			.build();
 	}
 }

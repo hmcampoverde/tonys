@@ -2,14 +2,14 @@ package org.hmcampoverde.service;
 
 import java.util.List;
 
-public interface Service<T> {
-	public List<T> findAll();
+public interface Service<E, D> {
+	public List<D> findAll();
 
-	public T findById(Long id);
+	public D findById(Long id);
 
-	public T create(T t);
+	public D create(D dto);
 
-	public T update(Long id, T t);
+	public D update(Long id, D dto);
 
 	public void delete(Long id);
 }

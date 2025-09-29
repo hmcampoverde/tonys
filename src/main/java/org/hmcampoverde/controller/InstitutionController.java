@@ -5,12 +5,9 @@ import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hmcampoverde.dto.InstitutionDto;
-import org.hmcampoverde.response.MessageHandler;
-import org.hmcampoverde.response.MessageResponse;
-import org.hmcampoverde.response.PaginatedRequest;
-import org.hmcampoverde.response.PaginatedResponse;
+import org.hmcampoverde.dto.response.MessageResponse;
+import org.hmcampoverde.message.MessageHandler;
 import org.hmcampoverde.service.InstitutionService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,23 +34,6 @@ public class InstitutionController {
 		return ResponseEntity.ok(institutionService.findAll());
 	}
 
-	@PostMapping("/findAllWithFilter")
-	public ResponseEntity<PaginatedResponse<InstitutionDto>> findAllWithFilter(@RequestBody PaginatedRequest request) {
-		Page<InstitutionDto> page = institutionService.findAllWithFilter(request);
-
-		PaginatedResponse<InstitutionDto> response = PaginatedResponse.<InstitutionDto>builder()
-			.currentPage(page.getNumber())
-			.totalPages(page.getTotalPages())
-			.totalItems(page.getTotalElements())
-			.pageSize(page.getSize())
-			.hasNext(page.hasNext())
-			.hasPrevious(page.hasPrevious())
-			.data(page.getContent())
-			.build();
-
-		return ResponseEntity.ok(response);
-	}
-
 	@GetMapping("/findById/{id}")
 	public ResponseEntity<InstitutionDto> findById(@PathVariable("id") @Min(1) Long id) {
 		return ResponseEntity.ok(institutionService.findById(id));
@@ -62,7 +42,8 @@ public class InstitutionController {
 	@PostMapping("/create")
 	public ResponseEntity<MessageResponse<InstitutionDto>> create(@Valid @RequestBody InstitutionDto institutionDto) {
 		institutionDto = institutionService.create(institutionDto);
-		return ResponseEntity.ok(messageHandler.buildCreationMessage("institution.create", institutionDto));
+
+		return ResponseEntity.ok(messageHandler.generateCreationMessage("institution.create", institutionDto));
 	}
 
 	@PutMapping("/update/{id}")
@@ -71,12 +52,14 @@ public class InstitutionController {
 		@Valid @RequestBody InstitutionDto institutionDto
 	) {
 		institutionDto = institutionService.update(id, institutionDto);
-		return ResponseEntity.ok(messageHandler.buildUpdateMessage("institution.update", institutionDto));
+
+		return ResponseEntity.ok(messageHandler.generateUpdateMessage("institution.update", institutionDto));
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<MessageResponse<Void>> delete(@PathVariable("id") Long id) {
 		institutionService.delete(id);
-		return ResponseEntity.ok().body(messageHandler.buildDeleteMessage("institution.deleted", null));
+
+		return ResponseEntity.ok().body(messageHandler.generateDeleteMessage("institution.deleted", null));
 	}
 }

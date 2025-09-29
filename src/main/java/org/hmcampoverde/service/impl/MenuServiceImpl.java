@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuServiceImpl implements MenuService {
 
 	private final MenuRepository menuRepository;
+
 	private final MenuMapper menuMapper;
 
 	@Override

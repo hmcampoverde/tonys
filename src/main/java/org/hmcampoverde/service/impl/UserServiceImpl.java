@@ -3,8 +3,8 @@ package org.hmcampoverde.service.impl;
 import java.text.ParseException;
 import lombok.RequiredArgsConstructor;
 import org.hmcampoverde.dto.TokenDto;
-import org.hmcampoverde.model.User;
-import org.hmcampoverde.security.SecurityProvider;
+import org.hmcampoverde.entity.User;
+import org.hmcampoverde.security.SecurityProviderTokenImpl;
 import org.hmcampoverde.service.RoleService;
 import org.hmcampoverde.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
 	private final AuthenticationManager authenticationManager;
-	private final SecurityProvider securityProvider;
+	private final SecurityProviderTokenImpl securityProvider;
 	private final RoleService roleService;
 	private final PasswordEncoder passwordEncoder;
 
@@ -31,12 +31,12 @@ public class UserServiceImpl implements UserService {
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		return TokenDto.builder().token(securityProvider.buildToken(authentication)).build();
+		return TokenDto.builder().token(securityProvider.generate(authentication)).build();
 	}
 
 	@Override
 	public TokenDto refresh(String token) throws ParseException {
-		return TokenDto.builder().token(securityProvider.refreshToken(token)).build();
+		return TokenDto.builder().token(securityProvider.refresh(token)).build();
 	}
 
 	@Override

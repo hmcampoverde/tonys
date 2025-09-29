@@ -5,10 +5,10 @@ import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hmcampoverde.dto.EmployeeDto;
-import org.hmcampoverde.response.MessageHandler;
-import org.hmcampoverde.response.MessageResponse;
-import org.hmcampoverde.response.PaginatedRequest;
-import org.hmcampoverde.response.PaginatedResponse;
+import org.hmcampoverde.dto.request.PaginatedRequest;
+import org.hmcampoverde.dto.response.MessageResponse;
+import org.hmcampoverde.dto.response.PaginatedResponse;
+import org.hmcampoverde.message.MessageHandler;
 import org.hmcampoverde.service.EmployeeService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +62,8 @@ public class EmployeeController {
 	@PostMapping("/create")
 	public ResponseEntity<MessageResponse<EmployeeDto>> create(@Valid @RequestBody EmployeeDto employeeDto) {
 		employeeDto = employeeService.create(employeeDto);
-		return ResponseEntity.ok(messageHandler.buildCreationMessage("employee.create", employeeDto));
+
+		return ResponseEntity.ok(messageHandler.generateCreationMessage("employee.create", employeeDto));
 	}
 
 	@PutMapping("/update/{id}")
@@ -71,12 +72,14 @@ public class EmployeeController {
 		@Valid @RequestBody EmployeeDto employeeDto
 	) {
 		employeeDto = employeeService.update(id, employeeDto);
-		return ResponseEntity.ok(messageHandler.buildUpdateMessage("employee.update", employeeDto));
+
+		return ResponseEntity.ok(messageHandler.generateUpdateMessage("employee.update", employeeDto));
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<MessageResponse<Void>> delete(@PathVariable("id") Long id) {
 		employeeService.delete(id);
-		return ResponseEntity.ok().body(messageHandler.buildDeleteMessage("employee.deleted", null));
+
+		return ResponseEntity.ok().body(messageHandler.generateDeleteMessage("employee.deleted", null));
 	}
 }

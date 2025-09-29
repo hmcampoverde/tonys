@@ -20,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-	private final SecurityProvider securityProvider;
+	private final SecurityProviderToken securityProvider;
 	private final UserDetailsService userDetailsService;
 
 	@Override
@@ -31,7 +31,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 	) throws ServletException, IOException {
 		String token = extractToken(request);
 
-		if (StringUtils.hasText(token) && securityProvider.validateToken(token)) {
+		if (StringUtils.hasText(token) && securityProvider.validate(token)) {
 			UsernamePasswordAuthenticationToken authenticationToken;
 
 			String username = securityProvider.getUsername(token);

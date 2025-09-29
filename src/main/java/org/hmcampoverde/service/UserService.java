@@ -2,7 +2,7 @@ package org.hmcampoverde.service;
 
 import java.text.ParseException;
 import org.hmcampoverde.dto.TokenDto;
-import org.hmcampoverde.model.User;
+import org.hmcampoverde.entity.User;
 
 public interface UserService {
 	public TokenDto login(String username, String password);
