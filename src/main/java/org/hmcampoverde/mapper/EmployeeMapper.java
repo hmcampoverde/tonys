@@ -2,9 +2,8 @@ package org.hmcampoverde.mapper;
 
 import lombok.AllArgsConstructor;
 import org.hmcampoverde.dto.EmployeeDto;
-import org.hmcampoverde.model.Employee;
+import org.hmcampoverde.entity.Employee;
 import org.hmcampoverde.repository.InstitutionRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +12,7 @@ public class EmployeeMapper {
 
 	private final InstitutionRepository institutionRepository;
 
-	private final ModelMapper modelMapper;
+	private final InstitutionMapper institutionMapper;
 
 	public Employee map(EmployeeDto employeeDto) {
 		return map(employeeDto, Employee.builder().build());
@@ -35,6 +34,18 @@ public class EmployeeMapper {
 	}
 
 	public EmployeeDto map(Employee employee) {
-		return modelMapper.map(employee, EmployeeDto.class);
+		return EmployeeDto.builder()
+			.id(employee.getId())
+			.identification(employee.getIdentification())
+			.firstname(employee.getFirstname())
+			.lastname(employee.getLastname())
+			.emailInstitutional(employee.getEmailInstitutional())
+			.emailPersonal(employee.getEmailPersonal())
+			.phone(employee.getPhone())
+			.mobile(employee.getMobile())
+			.address(employee.getAddress())
+			.actived(employee.isActived())
+			.institution(institutionMapper.map(employee.getInstitution()))
+			.build();
 	}
 }

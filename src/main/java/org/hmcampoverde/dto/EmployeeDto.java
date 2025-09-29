@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class EmployeeDto {
 
 	private Long id;
@@ -27,15 +27,15 @@ public class EmployeeDto {
 	@NotBlank(message = "{employee.identification.required}")
 	private String identification;
 
-	@Size(max = 75, message = "{employee.emailPersonal.size}")
-	@NotBlank(message = "{employee.emailPersonal.required}")
-	@Email(message = "{employee.emailPersonal.invalid}")
-	private String emailPersonal;
-
 	@Size(max = 75, message = "{employee.emailInstitutional.size}")
 	@NotBlank(message = "{employee.emailInstitutional.required}")
 	@Email(message = "{employee.emailInstitutional.invalid}")
 	private String emailInstitutional;
+
+	@Size(max = 75, message = "{employee.emailPersonal.size}")
+	@NotBlank(message = "{employee.emailPersonal.required}")
+	@Email(message = "{employee.emailPersonal.invalid}")
+	private String emailPersonal;
 
 	@Size(min = 16, max = 16, message = "{employee.phone.size}")
 	@NotBlank(message = "{employee.phone.required}")
@@ -51,10 +51,10 @@ public class EmployeeDto {
 	@NotNull(message = "{employee.institution.required}")
 	private InstitutionDto institution;
 
-	@NotNull(message = "{institution.active.required}")
+	@NotNull(message = "{institution.actived.required}")
 	private boolean actived;
 
 	public String getFullname() {
-		return firstname + " " + lastname;
+		return lastname + " " + firstname;
 	}
 }

@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hmcampoverde.dto.CategoryDto;
-import org.hmcampoverde.response.MessageHandler;
-import org.hmcampoverde.response.MessageResponse;
+import org.hmcampoverde.dto.response.MessageResponse;
+import org.hmcampoverde.message.MessageHandler;
 import org.hmcampoverde.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,7 +42,8 @@ public class CategoryController {
 	@PostMapping("/create")
 	public ResponseEntity<MessageResponse<CategoryDto>> create(@Valid @RequestBody CategoryDto categoryDto) {
 		categoryDto = categoryService.create(categoryDto);
-		return ResponseEntity.ok(messageHandler.buildCreationMessage("category.create", categoryDto));
+
+		return ResponseEntity.ok(messageHandler.generateCreationMessage("category.create", categoryDto));
 	}
 
 	@PutMapping("/update/{id}")
@@ -51,12 +52,14 @@ public class CategoryController {
 		@Valid @RequestBody CategoryDto categoryDto
 	) {
 		categoryDto = categoryService.update(id, categoryDto);
-		return ResponseEntity.ok(messageHandler.buildUpdateMessage("category.update", categoryDto));
+
+		return ResponseEntity.ok(messageHandler.generateUpdateMessage("category.update", categoryDto));
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<MessageResponse<Void>> delete(@PathVariable("id") Long id) {
 		categoryService.delete(id);
-		return ResponseEntity.ok().body(messageHandler.buildDeleteMessage("category.deleted", null));
+
+		return ResponseEntity.ok().body(messageHandler.generateDeleteMessage("category.deleted", null));
 	}
 }

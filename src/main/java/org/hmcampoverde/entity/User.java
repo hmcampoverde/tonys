@@ -1,4 +1,4 @@
-package org.hmcampoverde.model;
+package org.hmcampoverde.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,28 +17,26 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "tbl_category")
+@Table(name = "tbl_user")
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-public class Category extends EntityBase {
+public class User extends EntityBase {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "category_id", nullable = false, length = 2)
+	@Column(name = "user_id", nullable = false, length = 4)
+	@EqualsAndHashCode.Include
 	private Long id;
 
-	@Column(name = "category_name", nullable = false, length = 75)
-	private String name;
+	@Column(name = "user_username", unique = true, nullable = false, length = 50)
+	private String username;
 
-	@Column(name = "category_icon", nullable = false, length = 75)
-	private String icon;
-
-	@Column(name = "category_visible", nullable = false, columnDefinition = "BOOLEAN DEFAULT 'TRUE'")
-	private boolean visible;
+	@Column(name = "user_password", nullable = false, columnDefinition = "TEXT")
+	private String password;
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-	@JoinColumn(name = "parent_id", nullable = true, foreignKey = @ForeignKey(name = "FK_CATEGORY_PARENT"))
-	private Category parent;
+	@JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_USER_ROL"))
+	private Role role;
 }

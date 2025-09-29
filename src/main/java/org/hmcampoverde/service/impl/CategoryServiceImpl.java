@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hmcampoverde.dto.CategoryDto;
-import org.hmcampoverde.exception.CustomException;
+import org.hmcampoverde.exception.ResourceNotFoundException;
 import org.hmcampoverde.mapper.CategoryMapper;
+import org.hmcampoverde.message.MessageResolver;
 import org.hmcampoverde.repository.CategoryRepository;
-import org.hmcampoverde.response.MessageHandler;
 import org.hmcampoverde.service.CategoryService;
-import org.springframework.http.HttpStatus;
+import org.hmcampoverde.validation.CategoryValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-	private final MessageHandler messageHandler;
+	private final MessageResolver messageResolver;
 
 	private final CategoryRepository repository;
+
+	private final CategoryValidator categoryValidator;
 
 	private final CategoryMapper mapper;
 
@@ -34,26 +36,19 @@ public class CategoryServiceImpl implements CategoryService {
 		return repository
 			.findById(id)
 			.map(mapper::map)
-			.orElseThrow(() ->
-				new CustomException(messageHandler.getDetail("category.id.notfound", id), HttpStatus.NOT_FOUND)
-			);
+			.orElseThrow(() -> new ResourceNotFoundException(messageResolver.resolve("category.id.notfound", id)));
 	}
 
 	@Override
 	public CategoryDto create(CategoryDto categoryDto) {
-		Boolean exists = repository.existsByName(0L, categoryDto.getName());
-		if (exists != null && exists) {
-			throw new CustomException(messageHandler.getDetail("category.name.duplicate"), HttpStatus.BAD_REQUEST);
-		}
+		categoryValidator.validate(categoryDto);
 
 		return Optional.of(categoryDto).map(mapper::map).map(repository::save).map(mapper::map).orElseThrow();
 	}
 
 	@Override
 	public CategoryDto update(Long id, CategoryDto categoryDto) {
-		if (repository.existsByName(id, categoryDto.getName())) {
-			throw new CustomException(messageHandler.getDetail("category.name.duplicate"), HttpStatus.BAD_REQUEST);
-		}
+		categoryValidator.validate(categoryDto);
 
 		return repository
 			.findById(id)
@@ -67,11 +62,10 @@ public class CategoryServiceImpl implements CategoryService {
 	public void delete(Long id) {
 		repository
 			.findById(id)
-			.ifPresentOrElse(
-				category -> category.setDeleted(Boolean.TRUE),
-				() -> {
-					throw new CustomException("", HttpStatus.BAD_REQUEST);
-				}
-			);
+			.map(category -> {
+				category.setDeleted(Boolean.TRUE);
+				return repository.save(category);
+			})
+			.orElseThrow(() -> new ResourceNotFoundException(messageResolver.resolve("category.id.notfound", id)));
 	}
 }

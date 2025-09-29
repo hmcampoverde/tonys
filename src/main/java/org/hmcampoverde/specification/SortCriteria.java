@@ -1,10 +1,10 @@
 package org.hmcampoverde.specification;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class SortCriteria {
 
 	private String field;
-	private String direction;
+	private String order;
 }

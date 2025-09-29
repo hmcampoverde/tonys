@@ -1,4 +1,4 @@
-package org.hmcampoverde.response;
+package org.hmcampoverde.dto.response;
 
 import java.util.List;
 import lombok.Builder;

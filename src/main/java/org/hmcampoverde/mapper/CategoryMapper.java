@@ -2,38 +2,25 @@ package org.hmcampoverde.mapper;
 
 import lombok.AllArgsConstructor;
 import org.hmcampoverde.dto.CategoryDto;
-import org.hmcampoverde.model.Category;
+import org.hmcampoverde.entity.Category;
 import org.hmcampoverde.repository.CategoryRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
 public class CategoryMapper {
 
-	private final ModelMapper modelMapper;
-
 	private final CategoryRepository categoryRepository;
 
 	public Category map(CategoryDto categoryDto) {
-		Category category = modelMapper.map(categoryDto, Category.class);
-
-		if (categoryDto.getIdParent() != null) {
-			category.setParent(categoryRepository.getReferenceById(categoryDto.getIdParent()));
-		}
-
-		return category;
-	}
-
-	public CategoryDto map(Category category) {
-		return modelMapper.map(category, CategoryDto.class);
+		return map(categoryDto, Category.builder().build());
 	}
 
 	public Category map(CategoryDto categoryDto, Category category) {
-		modelMapper
-			.typeMap(CategoryDto.class, Category.class)
-			.addMappings(mapper -> mapper.skip(Category::setId))
-			.map(categoryDto, category);
+		category.setName(categoryDto.getName());
+		category.setIcon(categoryDto.getIcon());
+		category.setVisible(categoryDto.isVisible());
+		category.setActived(categoryDto.isActived());
 
 		if (categoryDto.getIdParent() != null && categoryDto.getIdParent() != 0) {
 			category.setParent(categoryRepository.getReferenceById(categoryDto.getIdParent()));
@@ -42,5 +29,16 @@ public class CategoryMapper {
 		}
 
 		return category;
+	}
+
+	public CategoryDto map(Category category) {
+		return CategoryDto.builder()
+			.id(category.getId())
+			.name(category.getName())
+			.icon(category.getIcon())
+			.visible(category.isVisible())
+			.actived(category.isActived())
+			.idParent(category.getParent() != null ? category.getParent().getId() : null)
+			.build();
 	}
 }

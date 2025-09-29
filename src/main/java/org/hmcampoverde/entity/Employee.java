@@ -1,4 +1,4 @@
-package org.hmcampoverde.model;
+package org.hmcampoverde.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
